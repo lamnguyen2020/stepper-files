@@ -1,0 +1,112 @@
+#class {apocalypse} {open}
+
+#var guild gentech
+#var afk no
+#var docorpse 0
+#var dobot 0
+#var doeat 0
+#var d_eat
+#var cocoon 0
+
+#NOP #read .tt/3k/hpbar_update.tin;
+#read .tt/3k/corpses.tin;
+#read .tt/3k/dog.tin;
+#read .tt/3k/reforger.tin;
+#read .tt/3k/trigs.tin;
+#read .tt/3k/variables.tin;
+
+#alias {goafk} {
+	#class trigs kill;
+	#class ktrig kill;
+	killbot;
+	#var afk yes
+	
+}
+#alias {unafk} {
+	#read .tt/3k/trigs.tin;
+	#read .tt/char/apocalypse.tin;
+	
+}
+
+#alias {ktron} {#read .tt/char/apocalypse.tin}
+#alias {ktroff} {#class ktrig kill}
+#alias {trigsoff} {#class trigs kill;#class ktrig kill}
+#alias {trigson} {#read .tt/char/apocalypse.tin}
+
+/* Deadman Trigger */
+
+#var IdleTimeout 3600;
+#var deadman_seconds 3600;
+#alias {dmtimer %1} {#math deadman_seconds {%1*60}}
+#event {RECEIVED INPUT} {
+	#var idle 0;
+	#var IdleTimeout $deadman_seconds;
+	#if {"$afk" == "yes"} {unafk};
+	#undelay {deadmanSwitch};
+	#delay {deadmanSwitch} {xp;tellhist;goafk;go home;#ECHO {DEADMAN Trigered!}} {$IdleTimeout};
+}
+/* insert trigger for reclaim and recharge then continue to bot */
+#NOP #action {recharge trigger}
+
+
+#class {ktrig} {open}
+
+#alias {corpsetrig} {
+    #if {$domask == 1} {
+    	#if {$docoffin == 1} {!wrap all;c;gc};
+        #elseif {$docoffin == 0 && $dofreezer == 1} {doslab;c};
+        #else {wa;c;c};
+		#if {$bot != 1} {!get all;pab} {..}
+#NOP        !get all;pab;
+	};
+    #else {
+        #if {$docoffin == 1} {!wrap all;c;gc};
+        #elseif {$docoffin == 0 && $dofreezer == 1} {doslab;c};
+        #else {wa;c};
+		#if {$bot != 1} {!get all;pab} {..}
+#NOP        !get all;pab;
+	};
+}
+
+
+#NOP #action {You've killed} {
+	#var halt 1
+    #if {$cocoon == 1} {fuse};
+    #var phold 1;
+    #if {$domask == 1} {
+   		#delay {1.7} {h;corpsetrig}
+		};
+    #else {
+        #delay {.5} {h;corpsetrig}
+		}
+#NOP }	
+
+#action {%1 dealth the killing blow to %1} {
+	#var halt 1
+    #if {$cocoon == 1} {fuse};
+    #var phold 1;
+    #if {$domask == 1} {
+    	#delay {1.7} {h;corpsetrig}
+		};
+	#else {
+        #delay {.5} {h;corpsetrig}
+		}
+}
+
+#action {%* dealt the killing blow} {
+	#var halt 1
+    #if {$cocoon == 1} {fuse};
+    #var phold 1;
+    #if {&friends[%1]} {
+        #if {$domask == 1} {
+            #delay {1.7} {h;corpsetrig}
+			};
+        #else {
+            #delay {.5} {h;corpsetrig} 
+			}
+    } {#NOP}
+}
+
+#class {ktrig} {close}
+
+#class {apocalypse} {close}
