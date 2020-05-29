@@ -97,10 +97,7 @@ prompt >$nl$
 #act { gold coins.$} {
 	#var goldfound 1
 }
-#act {^=I=} {#var $itemfound 1}
-#act { gold coins.$} {
-    #var goldfound 1
-}
+#act {^=I=} {#var itemfound 1}
 
 #alias {killbot} {
 	.stop;brief no yes;
