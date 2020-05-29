@@ -125,7 +125,7 @@ prompt >$nl$
 
 /* Detect Players */
 #act {^=P= %*} {
-	#regex {%1} {&friends[%1]} {#nop} {#var foundplayer 1}
+	#if {&friends[%1]} {#NOP} {#var foundplayer 1}
 } {6}
 
 /* Skip room on Mob */
